@@ -155,9 +155,8 @@ app.get("/ranks", async (req, res) => {
       var string = "";
       for (var i = 0; i < members.length; i++) {
         let info = await getPlayerInfo(members[i]);
-        console.log(info);
         if (info.cRank !== info.rank) {
-          string = string.concat(info.name + "'s rank need to be changed to " + info.rank + ", it is currently " + info.cRank + "\n");
+          string = string.concat(info.name + "'s rank needs to be changed to " + info.rank + ", it is currently " + info.cRank + "\n");
         }
       }
       if (string !== undefined) res.send(string);
