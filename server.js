@@ -37,9 +37,7 @@ function getGexp(expHistory) {
 async function getApi() {
   var response;
   fetch(
-    "https://api.hypixel.net/guild?key=" +
-      process.env.HYPIXEL_API_KEY +
-      "&id=5ef336138ea8c950b6cb73f2"
+    "https://api.hypixel.net/guild?key=0263b520-7895-4f37-84c1-033d04bde642&id=5ef336138ea8c950b6cb73f2"
   )
     .then(res => res.json())
     .then(async json => {
@@ -92,9 +90,7 @@ app.get("/", async (req, res) => {
       name = json.data.player.username;
     });
   fetch(
-    "https://api.hypixel.net/guild?key=" +
-      process.env.HYPIXEL_API_KEY +
-      "&id=5ef336138ea8c950b6cb73f2"
+    "https://api.hypixel.net/guild?key=0263b520-7895-4f37-84c1-033d04bde642&id=5ef336138ea8c950b6cb73f2"
   )
     .then(res => res.json())
     .then(async json => {
@@ -151,9 +147,7 @@ app.get("/", async (req, res) => {
 app.get("/ranks", async (req, res) => {
   var e = res;
   fetch(
-    "https://api.hypixel.net/guild?key=" +
-      process.env.HYPIXEL_API_KEY +
-      "&id=5ef336138ea8c950b6cb73f2" 
+    "https://api.hypixel.net/guild?key=0263b520-7895-4f37-84c1-033d04bde642&id=5ef336138ea8c950b6cb73f2" 
   )
     .then(res => res.json())
     .then(async json => {
