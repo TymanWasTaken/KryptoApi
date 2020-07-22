@@ -10,18 +10,18 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-function makeRankResponse(members) {
-  console.log(members);
-  var string;
+async function makeRankResponse(members) {
+  var string = "";
   for (var i = 0; i < members.length; i++) {
-    let info = getPlayerInfo(members[i]);
+    let info = await getPlayerInfo(members[i]);
+    console.log(info);
     if (info.cRank !== info.rank) {
-      string = string + info.name + "'s rank need to be changed to " + info.rank + ", it is currently " + info.cRank + ". ";
+      string = string.concat(info.name + "'s rank need to be changed to " + info.rank + ", it is currently " + info.cRank + "\n");
     }
   }
+  console.log(string);
   if (string !== undefined) return string;
   else return "Everyone has correct ranks!";
-  
 }
 
 function search(nameKey, myArray) {
@@ -53,12 +53,12 @@ async function getApi() {
   return response;
 };
 async function getPlayerInfo(item) {
-  var info;
+  var info = {e: 1};
   await fetch("https://playerdb.co/api/player/minecraft/" + item.uuid)
     .then(res => res.json())
     .then(json => {
       info.name = json.data.player.username;
-      info.gexp = getGexp(item.gexpHistory);
+      info.gexp = getGexp(item.expHistory);
       info.uuid = item.uuid;
       info.cRank = item.rank;
       let rank;
@@ -73,10 +73,11 @@ async function getPlayerInfo(item) {
       } else if (info.gexp < 175000) {
         rank = "Experienced";
       } else if (info.gexp >= 175000) {
-        rank = "Krypt GODS";
+        rank = "Krypt GOD";
       }
       info.rank = rank;
     });
+    return info;
 }
 
 // https://expressjs.com/en/starter/basic-routing.html
@@ -84,13 +85,13 @@ app.get("/", async (req, res) => {
   var id;
   var name;
   if (req.query.name === undefined) {
-    return res.send("[Error: Must Specify player");
+    return res.send(" Error: Must Specify player");
   }
   await fetch("https://playerdb.co/api/player/minecraft/" + req.query.name)
     .then(res => res.json())
     .then(json => {
       if (json.code !== "player.found") {
-        return res.send("Error: Player does not exist");
+        return res.send(" Error: Player does not exist");
       }
       id = json.data.player.raw_id;
       name = json.data.player.username;
@@ -115,7 +116,7 @@ app.get("/", async (req, res) => {
       } else if (sum >= 125000 && sum < 175000) {
         rank = "Experienced";
       } else if (sum >= 175000) {
-        rank = "Krypt GODS";
+        rank = "Krypt GOD";
       }
       if (
         "Guild Master" === resultObject.rank ||
@@ -153,6 +154,7 @@ app.get("/", async (req, res) => {
     });
 });
 app.get("/ranks", async (req, res) => {
+  var e = res;
   fetch(
     "https://api.hypixel.net/guild?key=" +
       process.env.HYPIXEL_API_KEY +
@@ -160,8 +162,18 @@ app.get("/ranks", async (req, res) => {
   )
     .then(res => res.json())
     .then(async json => {
-      res.send(makeRankResponse(json.guild.members));
-    });
+      var members = json.guild.members;
+      var string = "";
+      for (var i = 0; i < members.length; i++) {
+        let info = await getPlayerInfo(members[i]);
+        console.log(info);
+        if (info.cRank !== info.rank) {
+          string = string.concat(info.name + "'s rank need to be changed to " + info.rank + ", it is currently " + info.cRank + "\n");
+        }
+      }
+      if (string !== undefined) res.send(string);
+      else res.send("Everyone has correct ranks!");
+      });
 });
 
 // listen for requests :)
