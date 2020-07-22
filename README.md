@@ -1,1 +1,1 @@
-# Api for the detonator mod
+# Api for the Krypton guild mod
