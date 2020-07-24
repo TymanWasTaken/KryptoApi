@@ -124,7 +124,7 @@ app.get("/", async (req, res) => {
         );
       } else if (rank === resultObject.rank) {
         res.send(
-          
+          " " +
             name +
             "'s guild stats:  Rank: " +
             rank +
@@ -133,6 +133,7 @@ app.get("/", async (req, res) => {
         );
       } else {
         res.send(
+          " " +
           name +
             "'s guild stats:  Rank: " +
             rank +
