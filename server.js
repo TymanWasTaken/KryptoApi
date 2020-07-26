@@ -6,6 +6,16 @@ const cache = require('./cache.json');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+async function cache() {
+  let temp;
+  json = await getApi();
+  let members = json.guild.members;
+  for (var i = 0; i < members.length; i++) {
+     temp[members[i].uuid] = await getName(members[i].uuid);
+  }
+  cache.names = temp;
+}
+
 async function makeRankResponse(members) {
   var string = "";
   for (var i = 0; i < members.length; i++) {
@@ -37,7 +47,7 @@ function getGexp(expHistory) {
 }
 async function getApi() {
   var response;
-  fetch(
+  await fetch(
     "https://api.hypixel.net/guild?key=0263b520-7895-4f37-84c1-033d04bde642&id=5ef336138ea8c950b6cb73f2"
   )
     .then(res => res.json())
@@ -46,6 +56,15 @@ async function getApi() {
   });
   return response;
 };
+async function getName(uuid) {
+  let name;
+  await fetch("https://playerdb.co/api/player/minecraft/" + item.uuid)
+    .then(res => res.json())
+    .then(json => {
+      name = json.player.data.username;
+  });
+  return name;
+}
 async function getPlayerInfo(item) {
   var info = {e: 1};
   await fetch("https://playerdb.co/api/player/minecraft/" + item.uuid)
@@ -164,6 +183,12 @@ app.get("/ranks", async (req, res) => {
       if (string !== undefined) res.send(string);
       else res.send("Everyone has correct ranks!");
       });
+});
+app.get('/ping', (req, res) => {
+  res.code(200);
+  cache();
+  res.send('Pong, caching!');
+  res.end();
 });
 
 // listen for requests :)
