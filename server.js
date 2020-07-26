@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const fetch = require("node-fetch");
 const bodyParser = require("body-parser");
+const cache = require('./cache.json');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
