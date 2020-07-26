@@ -21,7 +21,7 @@ async function cache() {
 async function makeRankResponse(members) {
 	var string = "";
 	for (var i = 0; i < members.length; i++) {
-		let info = await getPlayerInfo(members[i]);
+		let info = await getPlayerInfo(members[i], true);
 		console.log(info);
 		if (info.cRank !== info.rank) {
 			string = string.concat(info.name + "'s rank need to be changed to " + info.rank + ", it is currently " + info.cRank + "\n");
@@ -69,12 +69,14 @@ async function getName(uuid) {
 		});
 	return name;
 }
-async function getPlayerInfo(item) {
-        if (cache.names[item.uuid] === undefined) {
-                cache.names[item.uuid] = await getName(item.uuid);
-        }
+async function getPlayerInfo(item, getName) {
 	let info;
-	info.name = cache.names[item.uuid];
+	if (getName === true) {
+		if (cache.names[item.uuid] === undefined) {
+			cache.names[item.uuid] = await getName(item.uuid);
+		}
+		info.name = cache.names[item.uuid];
+	}
 	info.gexp = getGexp(item.expHistory);
 	info.uuid = item.uuid;
 	info.cRank = item.rank;
@@ -178,9 +180,10 @@ app.get("/ranks", async(req, res) => {
 			var members = json.guild.members;
 			var string = "";
 			for (var i = 0; i < members.length; i++) {
-				let info = await getPlayerInfo(members[i]);
+				let info = await getPlayerInfo(members[i], false);
 				if (info.cRank !== info.rank) {
-					string = string.concat(info.name + "'s rank needs to be changed to " + info.rank + ", it is currently " + info.cRank + "<br><br>");
+					let infoName = await getPlayerInfo(members[i], true):
+						string = string.concat(infoName.name + "'s rank needs to be changed to " + info.rank + ", it is currently " + info.cRank + "<br><br>");
 				}
 			}
 			if (string !== undefined) res.send(string);
