@@ -190,6 +190,9 @@ app.get('/ping', (req, res) => {
   res.send('Pong, caching!');
   res.end();
 });
+app.get('/cache', (req, res) => {
+  res.send(JSON.stringify(cache));
+});
 
 // listen for requests :)
 const listener = app.listen(process.env.PORT, () => {
