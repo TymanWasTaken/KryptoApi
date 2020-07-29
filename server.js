@@ -61,11 +61,11 @@ async function getPlayerInfo(item) {
         "Staff" === info.cRank
       ) {
         rank = info.cRank;
-      } else if (info.gexp < 125000) {
+      } else if (info.gexp <= 100000) {
         rank = "Initiate";
-      } else if (info.gexp < 175000) {
+      } else if (info.gexp < 200000) {
         rank = "Experienced";
-      } else if (info.gexp >= 175000) {
+      } else if (info.gexp >= 200000) {
         rank = "Krypt GOD";
       }
       info.rank = rank;
@@ -102,11 +102,11 @@ app.get("/", async (req, res) => {
       }
       var sum = getGexp(resultObject.expHistory);
       var rank;
-      if (sum < 125000) {
+      if (sum <= 100000) {
         rank = "Initiate";
-      } else if (sum >= 125000 && sum < 175000) {
+      } else if (sum < 200000) {
         rank = "Experienced";
-      } else if (sum >= 175000) {
+      } else if (sum >= 200000) {
         rank = "Krypt GOD";
       }
       if (
