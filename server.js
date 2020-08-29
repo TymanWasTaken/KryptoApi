@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const fetch = require("node-fetch");
 const bodyParser = require("body-parser");
+var differenceInMonths = require('date-fns/differenceInMonths')
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -51,24 +52,25 @@ async function getPlayerInfo(item) {
     .then(res => res.json())
     .then(json => {
       info.name = json.data.player.username;
-      info.gexp = getGexp(item.expHistory);
       info.uuid = item.uuid;
       info.cRank = item.rank;
       let rank;
+      let months = differenceInMonths(new Date(item.joined), new Date());
       if (
         "Guild Master" === info.cRank ||
         "Co-Owner" === info.cRank ||
-        "Staff" === info.cRank
+        "Officer" === info.cRank
       ) {
         rank = info.cRank;
-      } else if (info.gexp <= 100000) {
-        rank = "Initiate";
-      } else if (info.gexp < 200000) {
-        rank = "Experienced";
-      } else if (info.gexp >= 200000) {
-        rank = "Krypt GOD";
+      } else if (months < 1) {
+        rank = "Trial Member";
+      } else if (months >= 1 && months < 3) {
+        rank = "Trusted";
+      } else if (months >= 3) {
+        rank = "Senior Member";
       }
       info.rank = rank;
+      info.months = months
     });
     return info;
 }
@@ -94,53 +96,45 @@ app.get("/", async (req, res) => {
   )
     .then(res => res.json())
     .then(async json => {
-      var resultObject = await search(id, json.guild.members);
-      if (resultObject === undefined) {
+      var player = await search(id, json.guild.members);
+      if (player === undefined) {
         return res.send(
           "Error: Player is not in the krypton guild."
         );
       }
-      var sum = getGexp(resultObject.expHistory);
-      var rank;
-      if (sum <= 100000) {
-        rank = "Initiate";
-      } else if (sum < 200000) {
-        rank = "Experienced";
-      } else if (sum >= 200000) {
-        rank = "Krypt GOD";
-      }
+      var info = getPlayerInfo(player);
       if (
-        "Guild Master" === resultObject.rank ||
-        "Co-Owner" === resultObject.rank ||
-        "Staff" === resultObject.rank
+        "Guild Master" === info.rank ||
+        "Co-Owner" === info.rank ||
+        "Officer" === info.rank
       ) {
         res.send(
           " [Staff] " +
             name +
-            "'s guild stats:  Gexp Rank: " +
-            rank +
-            ", Weekly gexp: " +
-            numberWithCommas(sum)
+            "'s guild stats:  Time Rank: " +
+            info.rank +
+            ", Months in guild: " +
+            info.months
         );
-      } else if (rank === resultObject.rank) {
+      } else if (info.rank === info.cRank) {
         res.send(
           " " +
             name +
             "'s guild stats:  Rank: " +
             rank +
-            ", Weekly gexp: " +
-            numberWithCommas(sum)
+            ", Months in guild: " +
+            info.months
         );
       } else {
         res.send(
           " " +
           name +
             "'s guild stats:  Rank: " +
-            rank +
+            info.rank +
             " (Is currently " +
-            resultObject.rank +
-            ", needs to be updated), Weekly gexp: " +
-            numberWithCommas(sum)
+            info.cRank +
+            ", needs to be updated), Months in guild: " +
+            info.months
         );
       }
     });
