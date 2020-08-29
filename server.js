@@ -58,7 +58,7 @@ async function getPlayerInfo(item) {
       if (
         "Guild Master" === info.cRank ||
         "Co-Owner" === info.cRank ||
-        "Staff" === info.cRank
+        "Officer" === info.cRank
       ) {
         rank = info.cRank;
       } else if (info.gexp <= 100000) {
@@ -112,7 +112,7 @@ app.get("/", async (req, res) => {
       if (
         "Guild Master" === resultObject.rank ||
         "Co-Owner" === resultObject.rank ||
-        "Staff" === resultObject.rank
+        "Officer" === resultObject.rank
       ) {
         res.send(
           " [Staff] " +
