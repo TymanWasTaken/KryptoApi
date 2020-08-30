@@ -148,11 +148,16 @@ app.get("/ranks", async (req, res) => {
     .then(async json => {
       var members = json.guild.members;
       var string = "";
+      res.writeHead(200, "200 Found, Streaming response",
+        {
+          'Content-Type': 'text/html; charset=utf-8'
+        }
+      );
       for (var i = 0; i < members.length; i++) {
         let info = await getPlayerInfo(members[i]);
         if (info.currentRank !== info.correctRank) {
           string = string.concat(info.name + "'s rank needs to be changed to " + info.correctRank + ", it is currently " + info.currentRank + "<br><br>");
-          res.write(info.name + "'s rank needs to be changed to " + info.correctRank + ", it is currently " + info.currentRank + "\n\n")
+          res.write(info.name + "'s rank needs to be changed to " + info.correctRank + ", it is currently " + info.currentRank + "<br><br>")
         }
       }
       if (string === undefined) {
