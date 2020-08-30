@@ -11,8 +11,8 @@ async function makeRankResponse(members) {
   for (var i = 0; i < members.length; i++) {
     let info = await getPlayerInfo(members[i]);
     console.log(info);
-    if (info.cRank !== info.rank) {
-      string = string.concat(info.name + "'s rank need to be changed to " + info.rank + ", it is currently " + info.cRank + "\n");
+    if (info.currentRank !== info.correctRank) {
+      string = string.concat(info.name + "'s rank need to be changed to " + info.correctRank + ", it is currently " + info.currentRank + "\n");
     }
   }
   console.log(string);
@@ -53,15 +53,15 @@ async function getPlayerInfo(item) {
     .then(json => {
       info.name = json.data.player.username;
       info.uuid = item.uuid;
-      info.cRank = item.rank;
+      info.currentRank = item.rank;
       let rank;
-      let months = differenceInMonths(new Date(item.joined), new Date());
+      let months = differenceInMonths(new Date(), new Date(item.joined));
       if (
-        "Guild Master" === info.cRank ||
-        "Co-Owner" === info.cRank ||
-        "Officer" === info.cRank
+        "Guild Master" === info.currentRank ||
+        "Co-Owner" === info.currentRank ||
+        "Officer" === info.currentRank
       ) {
-        rank = info.cRank;
+        rank = info.currentRank;
       } else if (months < 1) {
         rank = "Trial Member";
       } else if (months >= 1 && months < 3) {
@@ -69,7 +69,7 @@ async function getPlayerInfo(item) {
       } else if (months >= 3) {
         rank = "Senior Member";
       }
-      info.rank = rank;
+      info.correctRank = rank;
       info.months = months
     });
     return info;
@@ -104,24 +104,24 @@ app.get("/", async (req, res) => {
       }
       var info = getPlayerInfo(player);
       if (
-        "Guild Master" === info.rank ||
-        "Co-Owner" === info.rank ||
-        "Officer" === info.rank
+        "Guild Master" === info.correctRank ||
+        "Co-Owner" === info.correctRank ||
+        "Officer" === info.correctRank
       ) {
         res.send(
           " [Staff] " +
             name +
             "'s guild stats:  Time Rank: " +
-            info.rank +
+            info.correctRank +
             ", Months in guild: " +
             info.months
         );
-      } else if (info.rank === info.cRank) {
+      } else if (info.correctRank === info.currentRank) {
         res.send(
           " " +
             name +
             "'s guild stats:  Rank: " +
-            rank +
+            info.correctRank +
             ", Months in guild: " +
             info.months
         );
@@ -130,9 +130,9 @@ app.get("/", async (req, res) => {
           " " +
           name +
             "'s guild stats:  Rank: " +
-            info.rank +
+            info.correctRank +
             " (Is currently " +
-            info.cRank +
+            info.currentRank +
             ", needs to be updated), Months in guild: " +
             info.months
         );
@@ -150,8 +150,8 @@ app.get("/ranks", async (req, res) => {
       var string = "";
       for (var i = 0; i < members.length; i++) {
         let info = await getPlayerInfo(members[i]);
-        if (info.cRank !== info.rank) {
-          string = string.concat(info.name + "'s rank needs to be changed to " + info.rank + ", it is currently " + info.cRank + "<br><br>");
+        if (info.currentRank !== info.correctRank) {
+          string = string.concat(info.name + "'s rank needs to be changed to " + info.correctRank + ", it is currently " + info.currentRank + "<br><br>");
         }
       }
       if (string !== undefined) res.send(string);
