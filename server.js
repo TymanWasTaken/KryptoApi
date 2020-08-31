@@ -2,7 +2,8 @@ const express = require("express");
 const app = express();
 const fetch = require("node-fetch");
 const bodyParser = require("body-parser");
-var differenceInMonths = require('date-fns/differenceInMonths')
+var differenceInMonths = require('date-fns/differenceInMonths');
+var utcToZonedTime = require('date-fns-tz/utcToZonedTime');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -55,7 +56,7 @@ async function getPlayerInfo(item) {
       info.uuid = item.uuid;
       info.currentRank = item.rank;
       let rank;
-      let months = differenceInMonths(new Date(), new Date(item.joined));
+      let months = differenceInMonths(utcToZonedTime(new Date(), 'America/New_York'), utcToZonedTime(new Date(item.joined), 'America/New_York'));
       if (
         "Guild Master" === info.currentRank ||
         "Co-Owner" === info.currentRank ||
