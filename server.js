@@ -110,14 +110,14 @@ app.get('/player', async (req, res) => {
 			'Error: Player is not in the krypton guild.'
 		);
 	}
-	var info = getPlayerInfo(player);
+	var info = await getPlayerInfo(player);
 	if (
 		'Guild Master' === info.correctRank ||
 				'Co-Owner' === info.correctRank ||
 				'Officer' === info.correctRank
 	) {
 		res.send(
-			' [Staff] ' +
+			'[Staff] ' +
 					name +
 					'\'s guild stats:  Time Rank: ' +
 					info.correctRank +
@@ -126,7 +126,7 @@ app.get('/player', async (req, res) => {
 		);
 	} else if (info.correctRank === info.currentRank) {
 		res.send(
-			' ' +
+			
 					name +
 					'\'s guild stats:  Rank: ' +
 					info.correctRank +
@@ -135,7 +135,7 @@ app.get('/player', async (req, res) => {
 		);
 	} else {
 		res.send(
-			' ' +
+		
 					name +
 					'\'s guild stats:  Rank: ' +
 					info.correctRank +
