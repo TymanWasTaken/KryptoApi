@@ -76,8 +76,9 @@ async function getPlayerInfo(item) {
 			}
 			info.correctRank = rank;
 			info.months = months;
+			info.string = "";
 			if (info.currentRank !== info.correctRank) {
-				info.string = string.concat(info.name + '\'s rank needs to be changed to ' + info.correctRank + ', it is currently ' + info.currentRank + '<br><br>');
+				info.string = info.string.concat(info.name + '\'s rank needs to be changed to ' + info.correctRank + ', it is currently ' + info.currentRank + '<br><br>');
 			}
 		});
 	return info;
