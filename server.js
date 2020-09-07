@@ -76,6 +76,9 @@ async function getPlayerInfo(item) {
 			}
 			info.correctRank = rank;
 			info.months = months;
+			if (info.currentRank !== info.correctRank) {
+				info.string = string.concat(info.name + '\'s rank needs to be changed to ' + info.correctRank + ', it is currently ' + info.currentRank + '<br><br>');
+			}
 		});
 	return info;
 }
@@ -154,17 +157,21 @@ var json = await getApi();
 			res.writeHead(200, '200 Found, Streaming response', {
 				'Content-Type': 'text/html; charset=utf-8'
 			});
+			var promiseArray = []
 			for (var i = 0; i < members.length; i++) {
-				let info = await getPlayerInfo(members[i]);
-				if (info.currentRank !== info.correctRank) {
-					string = string.concat(info.name + '\'s rank needs to be changed to ' + info.correctRank + ', it is currently ' + info.currentRank + '<br><br>');
-					res.write(info.name + '\'s rank needs to be changed to ' + info.correctRank + ', it is currently ' + info.currentRank + '<br><br>');
+				promiseArray.push(getPlayerInfo(members[i]))
+			}
+			Promise.all(promiseArray).then((values) => {
+				if (promiseArray.length === 0) {
+					res.send('Everyone has correct ranks!');
 				}
-			}
-			if (string === undefined) {
-				res.send('Everyone has correct ranks!');
-			}
-			res.end();
+				else {
+					for (var i = 0; i < values.length; i++) {
+						res.write(values[i].string);
+					}
+					res.end();
+				}
+			})
 });
 
 app.get('dbtest');
