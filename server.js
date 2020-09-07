@@ -138,7 +138,7 @@ app.get('/player', async (req, res) => {
 			'[Staff] ' +
 					name +
 					'\'s guild stats:  Time Rank: ' +
-					info.correctRank +
+					info.timeRank +
 					', Months in guild: ' +
 					info.months
 		);
