@@ -135,7 +135,7 @@ app.get('/player', async (req, res) => {
 				'Officer' === info.correctRank
 	) {
 		res.send(
-			'[Staff] ' +
+			'[' + info.correctRank + '] ' +
 					name +
 					'\'s guild stats:  Time Rank: ' +
 					info.timeRank +
