@@ -1,4 +1,6 @@
 require('dotenv').config();
+var sqlite3 = require('sqlite3').verbose();
+var db = new sqlite3.Database(__dirname+'/cache.db');
 const express = require('express');
 const app = express();
 const fetch = require('node-fetch');
