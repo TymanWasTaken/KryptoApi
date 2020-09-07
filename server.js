@@ -59,22 +59,36 @@ async function getPlayerInfo(item) {
 			info.name = json.data.player.username;
 			info.uuid = item.uuid;
 			info.currentRank = item.rank;
-			let rank;
+			info.getRank = function (time) {
+				let timeRank;
+				if (time < 1) {
+					timeRank = 'Trial Member';
+				}	
+				else if (time >= 1 && time < 3) {
+					timeRank = 'Trusted';
+				} 
+				else if (time >= 3) {
+					timeRank = 'Senior Member';
+				}
+				return timeRank;
+			}
+			let correctRank;
 			let months = differenceInMonths(utcToZonedTime(new Date(), 'America/New_York'), utcToZonedTime(new Date(item.joined), 'America/New_York'));
 			if (
 				'Guild Master' === info.currentRank ||
 				'Co-Owner' === info.currentRank ||
 				'Officer' === info.currentRank
 			) {
-				rank = info.currentRank;
+				correctRank = info.currentRank;
 			} else if (months < 1) {
-				rank = 'Trial Member';
+				correctRank = 'Trial Member';
 			} else if (months >= 1 && months < 3) {
-				rank = 'Trusted';
+				correctRank = 'Trusted';
 			} else if (months >= 3) {
-				rank = 'Senior Member';
+				correctRank = 'Senior Member';
 			}
-			info.correctRank = rank;
+			info.correctRank = correctRank;
+			info.timeRank = info.getRank(months);
 			info.months = months;
 			info.string = "";
 			if (info.currentRank !== info.correctRank) {
