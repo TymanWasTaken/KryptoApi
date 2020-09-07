@@ -9,6 +9,14 @@
  		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
   		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+                <script>
+                $(document).ready(function() {
+            $("#player").submit(function(e){
+                e.preventDefault(e);
+                window.location = "https://kryptonguild.ml/player?name="+$("#name").val();
+            });
+        });
+                </script>
 	</head>
 
 	<body>
@@ -33,7 +41,7 @@
 		  
 				<!-- Modal body -->
 				<div class="modal-body">
-				  This part is currently broken, are you sure you want to go to it?
+				  <form id="player"><label for="name">Name: </label><input type="text" id="name" name="name"><input type="submit" class="btn btn-primary mb-2" value="submit"></form>
 				</div>
 		  
 				<!-- Modal footer -->
