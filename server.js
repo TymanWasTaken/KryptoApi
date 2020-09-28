@@ -99,7 +99,7 @@ async function getPlayerInfo(item) {
 }
 
 app.get('/', (req, res) => {
-	res.sendFile('/home/tyman/kryptoapi/views/index.html');
+	res.sendFile('/home/pi/kryptoapi/views/index.html');
 });
 
 app.get('/rank', (req, res) => {

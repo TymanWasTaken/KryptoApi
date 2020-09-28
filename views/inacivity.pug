@@ -1,0 +1,75 @@
+doctype html
+html(lang='en')
+	head
+		title Krypton hypixel guild
+		meta(name='theme-color', content='#3578f6')
+		meta(charset='utf-8')
+		meta(name='viewport', content='width=device-width, initial-scale=1')
+		link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css')
+		script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js')
+		script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js')
+		script(src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js')
+		script.
+			$(document).ready(function() {
+				$("#player").submit(function(e){
+					e.preventDefault(e);
+					window.location = "https://kryptonguild.ml/player?name="+$("#username").val();
+				});
+				$("#inactivity").submit(function(e){
+					e.preventDefault(e);
+					window.location = "https://kryptonguild.ml/inactivity?name="+$("#inactivename").val()+"&days="+$("#days").val();
+				});
+			});
+	body
+		.container-fluid.pt-3.pb-3.bg-primary.text-white
+			h1 Krypton Guild Website
+			.btn-group
+				button.btn.btn-secondary(type='button', data-toggle='modal', data-target='#stats')
+					| Specific player stats
+				button.btn.btn-secondary(type='button', data-toggle='modal', data-target='#inactivity')
+					| Inactivity checker
+				a.btn.btn-secondary(href='/ranks', role='button') Rank updates
+		h2 Stats for #{api.player.displayname}
+		if api.player.lastLogin > api.player.lastLogout
+			h6 Currently online!
+		else
+			h6 Last active #{inactivedays} days ago
+		h6 Weekly gexp: #{gexp}
+		h6 Joined guild: #{joineddays} days ago
+		if inactivedays >= daythreshold
+			h6 Inactive!
+		h4 Warning: This cannot check for inactivity notices! Make sure to check on discord if they have one, unless they are not in it.
+		#stats.modal
+			.modal-dialog
+				.modal-content
+					form#player
+						// Modal Header
+						.modal-header
+							h4.modal-title What player?
+							button.close(type='button', data-dismiss='modal') ×
+						// Modal body
+						.modal-body
+							.input-group.mb-3
+								input#username.form-control(type="text" aria-label="Username" placeholder="Username" aria-describedby="inputGroup-sizing-default")
+						// Modal footer
+						.modal-footer
+							input.btn.btn-success(type='submit', value='Submit')
+							button.btn.btn-danger(type='button', data-dismiss='modal') Cancel
+		#inactivity.modal
+			.modal-dialog
+				.modal-content
+					form#inactivity
+						// Modal Header
+						.modal-header
+							h4.modal-title What player?
+							button.close(type='button', data-dismiss='modal') ×
+						// Modal body
+						.modal-body
+							.input-group.mb-3
+								input#inactivename.form-control(type="text" aria-label="Inactive username" placeholder="Username" aria-describedby="inputGroup-sizing-default")
+								.input-group.mb-3
+								input#days.form-control(type="number" aria-label="Days" placeholder="How many days is inactive?" aria-describedby="inputGroup-sizing-default")
+						// Modal footer
+						.modal-footer
+							input.btn.btn-success(type='submit', value='Submit')
+							button.btn.btn-danger(type='button', data-dismiss='modal') Cancel
