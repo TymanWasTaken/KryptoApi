@@ -53,7 +53,7 @@ async function getPlayerInfo(item) {
 	info.getRank = function (time) {
 		let timeRank;
 		if (time < 1) {
-			timeRank = 'Trial Member';
+			timeRank = 'Trial';
 		} else if (time >= 1 && time < 3) {
 			timeRank = 'Trusted';
 		} else if (time >= 3) {
@@ -70,7 +70,7 @@ async function getPlayerInfo(item) {
 	) {
 		correctRank = info.currentRank;
 	} else if (months < 1) {
-		correctRank = 'Trial Member';
+		correctRank = 'Trial';
 	} else if (months >= 1 && months < 3) {
 		correctRank = 'Trusted';
 	} else if (months >= 3) {
